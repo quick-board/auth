@@ -2,6 +2,7 @@ package com.quickboard.auth.account;
 
 import com.quickboard.auth.account.enums.AccountState;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,12 +24,19 @@ public class Account {
     @Setter
     private String password;
 
-    @Column(name = "refresh_token")
-    @Setter
-    private String refreshToken;
-
     @Column(name = "account_state")
     @Enumerated(EnumType.STRING)
     @Setter
     private AccountState accountState;
+
+    @Column(name = "refresh_token")
+    @Setter
+    private String refreshToken;
+
+    @Builder
+    public Account(String username, String password, AccountState accountState) {
+        this.username = username;
+        this.password = password;
+        this.accountState = accountState;
+    }
 }
