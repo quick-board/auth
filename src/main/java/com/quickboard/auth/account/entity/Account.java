@@ -1,4 +1,4 @@
-package com.quickboard.auth.account;
+package com.quickboard.auth.account.entity;
 
 import com.quickboard.auth.account.enums.AccountState;
 import jakarta.persistence.*;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @Table(name = "accounts")
 @Getter
 @NoArgsConstructor
-public class Account {
+public class Account extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
