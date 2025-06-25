@@ -1,3 +1,10 @@
 spring:
   application:
     name: auth
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  jackson:
+    time-zone: UTC
