@@ -20,3 +20,10 @@ spring:
       path: /h2-console
       settings.trace: false
       settings.web-allow-others: false
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://admin:3489@localhost:8010/eureka/
