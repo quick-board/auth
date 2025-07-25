@@ -1,4 +1,4 @@
-package com.quickboard.auth.account.entity;
+package com.quickboard.auth.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
