@@ -1,6 +1,7 @@
 package com.quickboard.auth.account.entity;
 
 import com.quickboard.auth.account.enums.AccountState;
+import com.quickboard.auth.account.enums.Role;
 import com.quickboard.auth.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -19,7 +20,7 @@ public class Account extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     @Setter
     private String username;
 
@@ -27,7 +28,11 @@ public class Account extends BaseEntity {
     @Setter
     private String password;
 
-    @Column(name = "account_state")
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Column(name = "account_state", nullable = false)
     @Enumerated(EnumType.STRING)
     @Setter
     private AccountState accountState;

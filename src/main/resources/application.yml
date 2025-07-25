@@ -8,3 +8,7 @@ spring:
           time_zone: UTC
   jackson:
     time-zone: UTC
+
+springdoc:
+  swagger-ui:
+    path: /swagger
