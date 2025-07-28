@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### algorithm ###
+/src/main/resources/application-hs512.yml
