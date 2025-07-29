@@ -46,9 +46,10 @@ public class Account extends BaseEntity {
     private Instant refreshExpiresAt;
 
     @Builder
-    public Account(String username, String password, AccountState accountState) {
+    public Account(String username, String password, Role role, AccountState accountState) {
         this.username = username;
         this.password = password;
+        this.role = role;
         this.accountState = accountState;
     }
 }

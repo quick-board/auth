@@ -28,14 +28,14 @@ public class AuthServiceImpl implements AuthService {
     public Account authenticateAndIssueRefreshToken(String username, String password) {
         Account account = accountRepository.findByUsername(username).orElseThrow(AccountNotFoundException::new);
 
-        //비밀번호 검증
-        if(!passwordEncoder.matches(password, account.getPassword())){
-            throw new AccountAuthorNotOwnerException();
-        }
-
         //탈퇴 검증
         if(account.getAccountState() == AccountState.INACTIVE){
             throw new AccountAuthorInactiveException();
+        }
+
+        //비밀번호 검증
+        if(!passwordEncoder.matches(password, account.getPassword())){
+            throw new AccountAuthorNotOwnerException();
         }
 
         //리프레시토큰 갱신

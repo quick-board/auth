@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,6 +32,13 @@ public class SecurityConfig {
         http.authorizeHttpRequests(requests ->
                 requests
                         .anyRequest().permitAll());
+
+        // /h2-console 화면 표시안되는 문제 해결
+        http.headers(h -> h
+                .frameOptions(HeadersConfigurer
+                        .FrameOptionsConfig::disable
+                )
+        );
 
         return http.build();
     }
