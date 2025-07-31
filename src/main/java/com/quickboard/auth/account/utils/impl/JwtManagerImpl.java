@@ -5,11 +5,12 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
-import com.quickboard.auth.account.constants.JwtConstants;
+import com.quickboard.auth.common.constants.JwtConstants;
 import com.quickboard.auth.account.entity.Account;
 import com.quickboard.auth.account.enums.AccountState;
 import com.quickboard.auth.account.enums.Role;
 import com.quickboard.auth.account.utils.JwtManager;
+import com.quickboard.auth.common.security.dto.AccountDetails;
 import com.quickboard.auth.common.security.dto.AuthorizedAccount;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,8 +36,8 @@ public class JwtManagerImpl implements JwtManager {
         Instant now = Instant.now();
         return JWT.create()
                 .withSubject(account.getId().toString())
-                .withClaim(JwtConstants.ROLE, account.getRole().name().toLowerCase())
-                .withClaim(JwtConstants.ACCOUNT_STATE, account.getAccountState().name().toLowerCase())
+                .withClaim(JwtConstants.ROLE, account.getRole().toString())
+                .withClaim(JwtConstants.ACCOUNT_STATE, account.getAccountState().toString())
                 .withIssuer(issuer)
                 .withIssuedAt(now)
                 .withExpiresAt(now.plus(30, ChronoUnit.MINUTES))
@@ -47,9 +48,12 @@ public class JwtManagerImpl implements JwtManager {
     public Optional<AuthorizedAccount> validAccessToken(String accessToken) {
         try {
             DecodedJWT decodedJWT = jwtVerifier.verify(accessToken);
-            AuthorizedAccount authorizedAccount = new AuthorizedAccount(Long.parseLong(decodedJWT.getSubject()),
-                    Role.valueOf(decodedJWT.getClaim(JwtConstants.ROLE).asString()),
-                    AccountState.valueOf(decodedJWT.getClaim(JwtConstants.ACCOUNT_STATE).asString()));
+
+            AccountDetails accountDetails = new AccountDetails(
+                    Role.from(decodedJWT.getClaim(JwtConstants.ROLE).asString()),
+                    AccountState.from(decodedJWT.getClaim(JwtConstants.ACCOUNT_STATE).asString())
+            );
+            AuthorizedAccount authorizedAccount = new AuthorizedAccount(Long.parseLong(decodedJWT.getSubject()), accountDetails);
 
             return Optional.of(authorizedAccount);
         }catch (NumberFormatException | JWTVerificationException e){

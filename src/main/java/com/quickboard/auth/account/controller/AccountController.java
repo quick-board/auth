@@ -4,12 +4,16 @@ import com.quickboard.auth.account.dto.AccountCreate;
 import com.quickboard.auth.account.dto.AccountStatePatch;
 import com.quickboard.auth.account.service.AccountService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
+@Slf4j
 public class AccountController {
 
     private final AccountService accountService;
@@ -30,5 +34,12 @@ public class AccountController {
     public void changeStateByAdmin(@PathVariable("id") Long accountsId,
                                    @RequestBody AccountStatePatch accountStatePatch){
 
+    }
+
+    @GetMapping("/test")
+    public String test(Principal principal){
+
+        log.info("user = {}", principal);
+        return principal.getName();
     }
 }
