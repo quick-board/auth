@@ -3,9 +3,13 @@ package com.quickboard.auth.account.controller;
 import com.quickboard.auth.account.dto.AccountCreate;
 import com.quickboard.auth.account.dto.AccountStatePatch;
 import com.quickboard.auth.account.service.AccountService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -36,10 +40,11 @@ public class AccountController {
 
     }
 
-    @GetMapping("/test")
-    public String test(Principal principal){
 
-        log.info("user = {}", principal);
-        return principal.getName();
+    //익명 사용자를 가져오려면 @CurrentSecurityContext써야함. todo argumentResolver 만들기
+    @GetMapping("/test")
+    public String test(@CurrentSecurityContext SecurityContext securityContext){
+        log.info(securityContext.getAuthentication().getPrincipal().toString());
+        return securityContext.getAuthentication().toString();
     }
 }
