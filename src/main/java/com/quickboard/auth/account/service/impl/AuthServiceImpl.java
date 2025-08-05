@@ -47,8 +47,11 @@ public class AuthServiceImpl implements AuthService {
 
     @Transactional
     @Override
-    public boolean expireRefreshToken(Long accountId) {
-        return false;
+    public void expireRefreshToken(Long accountId) {
+        Account account = accountRepository.findById(accountId).orElseThrow(AccountNotFoundException::new);
+
+        account.setRefreshToken(null);
+        account.setRefreshExpiresAt(Instant.now());
     }
 
     @Transactional

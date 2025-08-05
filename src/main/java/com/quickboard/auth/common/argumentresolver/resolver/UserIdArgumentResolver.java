@@ -20,16 +20,16 @@ public class UserIdArgumentResolver implements HandlerMethodArgumentResolver {
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.hasParameterAnnotation(CurrentUserId.class) &&
-                parameter.getParameterType().equals(Optional.class);
+                parameter.getParameterType().equals(Long.class);
     }
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getPrincipal() == null) {
-            return Optional.empty();
+            return null;
         }
 
-        return Optional.of(authentication.getPrincipal());
+        return authentication.getPrincipal();
     }
 }

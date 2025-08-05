@@ -5,6 +5,7 @@ import com.quickboard.auth.account.dto.AuthResponse;
 import com.quickboard.auth.account.entity.Account;
 import com.quickboard.auth.account.service.AuthService;
 import com.quickboard.auth.account.utils.JwtManager;
+import com.quickboard.auth.common.argumentresolver.annotations.CurrentUserId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,12 +39,15 @@ public class AuthController {
 
 
     @PostMapping("/auth/logout")
-    public void logout(){
-        //1. 컨텍스트 홀더에서 회원 식별 정보(아마 userId?) 가져오기 (아마 argumentResolver에 가져오는거 하나 추가하면 될듯)
-        //2. 리프레시 토큰 만료시키기(액세스는 어떻게 하지?? 프론트에서 액세스 토큰을 지우도록 해야하나? 근데 그것도 강제는 아니잖아...)
-        //3. 필요는 없겠지만 컨텍스트 홀더 비우기
+    public ResponseEntity<Void> logout(@CurrentUserId Long userId){
+        //todo 블랙리스트만들어서 만료된 액세스 토큰들 추가하기?
 
-        //todo 필터 만들기
+        Optional<Long> optionalUserId = Optional.ofNullable(userId);
+        optionalUserId.ifPresent(authService::expireRefreshToken);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, emptyCookie().toString())
+                .build();
     }
 
     @PostMapping("/auth/refresh")
@@ -61,6 +66,16 @@ public class AuthController {
                 .secure(false)
                 .path("/")
                 .maxAge(Duration.ofDays(30))
+                .sameSite("Strict")
+                .build();
+    }
+
+    private static ResponseCookie emptyCookie(){
+        return ResponseCookie.from(REFRESH_COOKIE_NAME)
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(0)
                 .sameSite("Strict")
                 .build();
     }
