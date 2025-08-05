@@ -45,7 +45,8 @@ public class AccountController {
 
     //익명 사용자를 가져오려면 @CurrentSecurityContext써야함. todo argumentResolver 만들기
     @GetMapping("/test")
-    public String test(@CurrentUserId Optional<Long> optionalUserId){
+    public String test(@CurrentUserId Long userId){
+        Optional<Long> optionalUserId = Optional.ofNullable(userId);
         log.info(optionalUserId.toString());
         return optionalUserId.toString();
     }
