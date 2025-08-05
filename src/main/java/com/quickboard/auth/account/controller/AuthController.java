@@ -22,6 +22,7 @@ public class AuthController {
     private final JwtManager jwtManager;
     private static final String REFRESH_COOKIE_NAME = "refresh_token";
 
+    //todo 일반 컨트롤러말고 필터로 로그인 옮기기 https://www.devyummi.com/page?id=668d55e4ceede2499082fc28
     @PostMapping("/auth/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest){
         Account account = authService.authenticateAndIssueRefreshToken(authRequest.username(), authRequest.password());

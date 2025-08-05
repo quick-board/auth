@@ -10,8 +10,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -29,16 +31,23 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class JwtSecurityContextPersistenceFilter extends OncePerRequestFilter {
 
     private final AuthenticationManager authenticationManager;
+    private final AuthenticationEntryPoint authenticationEntryPoint;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         Optional<String> optionalToken = extractToken(request.getHeader(JwtConstants.TOKEN_HEADER_NAME));
-
-        optionalToken.ifPresent(this::attemptAuthenticate);
-
+        if (optionalToken.isPresent()) {
+            try {
+                attemptAuthenticate(optionalToken.get());
+            } catch (AuthenticationException e) {
+                log.warn("Caught BadCredentialsException: {}", e.getMessage());
+                authenticationEntryPoint.commence(request, response, e);
+                return;
+            }
+        }
         filterChain.doFilter(request, response);
     }
 
