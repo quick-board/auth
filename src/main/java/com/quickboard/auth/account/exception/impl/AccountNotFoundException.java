@@ -9,4 +9,8 @@ public class AccountNotFoundException extends ResourceNotFoundException {
     public AccountNotFoundException(Throwable cause) {
         super(cause);
     }
+
+    public AccountNotFoundException(String message) {
+        super(message);
+    }
 }

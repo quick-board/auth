@@ -17,15 +17,15 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/auth")
 public class AuthController {
 
     private final AuthService authService;
     private final JwtManager jwtManager;
     private static final String REFRESH_COOKIE_NAME = "refresh_token";
 
-    //todo 일반 컨트롤러말고 필터로 로그인 옮기기 https://www.devyummi.com/page?id=668d55e4ceede2499082fc28
-    @PostMapping("/auth/login")
+    //todo 일반 컨트롤러말고 필터로 로그인 옮기는거 고민하기 https://www.devyummi.com/page?id=668d55e4ceede2499082fc28
+    @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest){
         Account account = authService.authenticateAndIssueRefreshToken(authRequest.username(), authRequest.password());
         String accessToken = jwtManager.generateAccessToken(account);
@@ -38,7 +38,7 @@ public class AuthController {
 
 
 
-    @PostMapping("/auth/logout")
+    @PostMapping("/logout")
     public ResponseEntity<Void> logout(@CurrentUserId Long userId){
         //todo 블랙리스트만들어서 만료된 액세스 토큰들 추가하기?
 
@@ -50,14 +50,14 @@ public class AuthController {
                 .build();
     }
 
-    @PostMapping("/auth/refresh")
-    public AuthResponse refreshAccessToken(@CookieValue("refreshToken") String refreshToken){
-        //1. 리프레시 토큰으로 해당하는 account 검색
-        //2. 유효 검사
-        //3. 리프레시 토큰을 새로 발급 하고 첨부
-        //4. 액세스 토큰 발급
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponse> refreshAccessToken(@CookieValue("refresh_token") String refreshToken){
+        Account account = authService.rotateRefreshTokenIfValid(refreshToken);
+        String accessToken = jwtManager.generateAccessToken(account);
 
-        return null;
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, account.getRefreshToken())
+                .body(new AuthResponse(accessToken));
     }
 
     private static ResponseCookie generateCookie(String refreshToken) {
