@@ -39,7 +39,10 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(requests ->
                 requests
-                        .anyRequest().permitAll());
+                        .requestMatchers("/error/**","/api/v1/auth/**", "/api/v1/accounts", "/h2-console/**").permitAll()
+                        .anyRequest().authenticated()
+//                        .requestMatchers("/api/v1/auth/logout").authenticated() //나중에 블랙리스트 만들고 추가
+        );
 
         //jwt환경에서 필요없는 것들 끄기
         http.csrf(AbstractHttpConfigurer::disable);

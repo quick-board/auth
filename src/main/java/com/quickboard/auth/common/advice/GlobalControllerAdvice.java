@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.web.bind.MissingRequestCookieException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -36,6 +37,16 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorInfo accessDeniedExceptionHandling(HttpServletRequest request, Exception e){
+        log.info("request uri = {}, exception message = {}", request.getRequestURI(), e.getMessage());
+        return  ErrorInfo.builder()
+                .url(request.getRequestURI())
+                .ex(e)
+                .build();
+    }
+
+    @ExceptionHandler(MissingRequestCookieException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorInfo missingRequestCookieExceptionHandling(HttpServletRequest request, Exception e){
         log.info("request uri = {}, exception message = {}", request.getRequestURI(), e.getMessage());
         return  ErrorInfo.builder()
                 .url(request.getRequestURI())
