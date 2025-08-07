@@ -15,6 +15,6 @@ public enum AccountState {
 
     @Override
     public String toString() {
-        return super.toString().toUpperCase();
+        return super.toString().toLowerCase();
     }
 }

@@ -51,7 +51,7 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<AuthResponse> refreshAccessToken(@CookieValue("refresh_token") String refreshToken){
+    public ResponseEntity<AuthResponse> refreshAccessToken(@CookieValue(REFRESH_COOKIE_NAME) String refreshToken){
         Account account = authService.rotateRefreshTokenIfValid(refreshToken);
         String accessToken = jwtManager.generateAccessToken(account);
 
