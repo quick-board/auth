@@ -1,7 +1,6 @@
 package com.quickboard.auth.account.enums;
 
 public enum Role {
-    ANONYMOUS,
     USER,
     ADMIN;
 

@@ -10,6 +10,7 @@ import com.quickboard.auth.account.entity.Account;
 import com.quickboard.auth.account.enums.AccountState;
 import com.quickboard.auth.account.enums.Role;
 import com.quickboard.auth.account.utils.JwtManager;
+import com.quickboard.auth.common.feign.dto.ProfileOriginResponse;
 import com.quickboard.auth.common.security.dto.AccountDetails;
 import com.quickboard.auth.common.security.dto.AuthorizedAccount;
 import lombok.RequiredArgsConstructor;
@@ -31,13 +32,18 @@ public class JwtManagerImpl implements JwtManager {
     private final Algorithm algorithm;
     private final JWTVerifier jwtVerifier;
 
+    private final static String PROFILE_ID_CLAIM_NAME = "profile_id";
+    private final static String NICKNAME_CLAIM_NAME = "nickname";
+
     @Override
-    public String generateAccessToken(Account account) {
+    public String generateAccessToken(Account account, ProfileOriginResponse profile) {
         Instant now = Instant.now();
         return JWT.create()
                 .withSubject(account.getId().toString())
                 .withClaim(JwtConstants.ROLE, account.getRole().toString())
                 .withClaim(JwtConstants.ACCOUNT_STATE, account.getAccountState().toString())
+                .withClaim(PROFILE_ID_CLAIM_NAME, profile.id())
+                .withClaim(NICKNAME_CLAIM_NAME, profile.nickname())
                 .withIssuer(issuer)
                 .withIssuedAt(now)
                 .withExpiresAt(now.plus(30, ChronoUnit.MINUTES))
