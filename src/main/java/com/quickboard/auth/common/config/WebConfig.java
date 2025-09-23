@@ -1,5 +1,6 @@
 package com.quickboard.auth.common.config;
 
+import com.quickboard.auth.common.argumentresolver.resolver.ServicePassportResolver;
 import com.quickboard.auth.common.argumentresolver.resolver.UserIdArgumentResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -13,9 +14,11 @@ import java.util.List;
 public class WebConfig implements WebMvcConfigurer {
 
     private final UserIdArgumentResolver userIdArgumentResolver;
+    private final ServicePassportResolver servicePassportResolver;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(userIdArgumentResolver);
+        resolvers.add(servicePassportResolver);
     }
 }

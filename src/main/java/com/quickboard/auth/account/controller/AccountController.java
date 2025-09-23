@@ -26,8 +26,14 @@ public class AccountController {
 
     @PostMapping("/accounts")
     @ResponseStatus(HttpStatus.CREATED)
-    public void postAccount(@RequestBody AccountCreate accountCreate){
-        accountService.createAccount(accountCreate);
+    public Long postAccount(@RequestBody AccountCreate accountCreate){
+        return accountService.createAccount(accountCreate);
+    }
+
+    @GetMapping("/accounts/account/exists")
+    @ResponseStatus(HttpStatus.OK)
+    public Boolean isExist(@RequestParam("username") String username){
+        return accountService.usernameExists(username);
     }
 
     @PatchMapping("/accounts/me/inactive")

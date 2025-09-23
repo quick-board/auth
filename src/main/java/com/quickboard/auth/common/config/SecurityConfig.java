@@ -39,7 +39,8 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(requests ->
                 requests
-                        .requestMatchers("/error/**","/api/v1/auth/**", "/api/v1/accounts", "/h2-console/**").permitAll()
+                        .requestMatchers("/h2-console/**", "/swagger", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/error/**","/api/v1/auth/**", "/api/v1/accounts", "/api/v1/accounts/account/**").permitAll()
                         .anyRequest().authenticated()
 //                        .requestMatchers("/api/v1/auth/logout").authenticated() //나중에 블랙리스트 만들고 추가
         );

@@ -23,7 +23,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Transactional
     @Override
-    public void createAccount(AccountCreate accountCreate) {
+    public Long createAccount(AccountCreate accountCreate) {
         Account newAccount = Account.builder()
                 .username(accountCreate.username())
                 .password(passwordEncoder.encode(accountCreate.password()))
@@ -31,7 +31,8 @@ public class AccountServiceImpl implements AccountService {
                 .role(Role.USER)
                 .build();
         try{
-            accountRepository.save(newAccount);
+            Account saved = accountRepository.save(newAccount);
+            return saved.getId();
         }catch (Exception e){
             log.warn("exception =\n", e);
             throw new AccountCreationException(e);
@@ -42,5 +43,11 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void patchAccountState(Long accountId, AccountState state) {
 
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean usernameExists(String username) {
+        return accountRepository.existsByUsername(username);
     }
 }
